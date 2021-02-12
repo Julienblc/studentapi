@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testdb
+    ports:
+      - 5432:5432
+
+  php:
+    container_name: "php-fpm"
+    build:
+      context: ./php
+    env_file:
+      - ../.env
+    environment:
+      - APP_ENV
+      - APP_SECRET
+    volumes:
+      - ../:/var/www
+    links:
+      - db:db
+
+  nginx:
+    container_name: "nginx"
+    build:
+      context: ./nginx
+    volumes:
+      - ../:/var/www
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log
+    depends_on:
+      - php
+    ports:
+      - "8000:80"

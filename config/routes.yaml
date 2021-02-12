@@ -1,0 +1,41 @@
+# Student routes
+student.create:
+    path: /api/student
+    controller: App\Controller\StudentController::create
+    methods: POST
+student.update:
+    path: /api/student/{id}
+    controller: App\Controller\StudentController::update
+    methods: PUT
+    requirements:
+        id: '^[1-9]\d*$'
+student.delete:
+    path: /api/student/{id}
+    controller: App\Controller\StudentController::delete
+    methods: DELETE
+    requirements:
+        id: '^[1-9]\d*$'
+
+# Grade routes
+grade.add:
+    path: /api/grade/{studentId}
+    controller: App\Controller\GradeController::create
+    methods: POST
+    requirements:
+        studentId: '^[1-9]\d*$'
+grade.average.student:
+    path: /api/average-student/{studentId}
+    controller: App\Controller\GradeController::studentAverage
+    methods: GET
+    requirements:
+        studentId: '^[1-9]\d*$'
+grade.average.class:
+    path: /api/average-class
+    controller: App\Controller\GradeController::classAverage
+    methods: GET
+
+# Api Doc
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
