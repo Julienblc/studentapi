@@ -166,6 +166,7 @@ class StudentController extends AbstractController
      * Id of the Student
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function update(int $id, Request $request): Response
     {
@@ -182,6 +183,17 @@ class StudentController extends AbstractController
         // VALIDATE json
         $data = get_object_vars(json_decode($request->getContent()));
         $validation = $this->responseBuilder->validateRequest($this->studentConstraints, $data);
+        if ($validation instanceof Response) return $validation;
+
+        // Need to create a DateTime object to validate the birthdate constraint "less than today"
+        $birthdateDateTime = [
+            "birthdate" => new \DateTime($data['birthdate'])
+        ];
+        $validation = $this->responseBuilder->validateRequest(
+            new Assert\Collection([
+                'birthdate' => [new Assert\LessThan('today')
+                ]
+            ]), $birthdateDateTime);
         if ($validation instanceof Response) return $validation;
 
         // UPDATE student
