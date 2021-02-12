@@ -201,10 +201,20 @@ class GradeController extends AbstractController
             ->createResponse($this->serializer->serializeData($this->makeAverage($gradesArray)));
     }
 
+    /**
+     * @param array $grades
+     * @return int[]
+     */
     private function makeAverage(array $grades): array
     {
+        $countGrades = count($grades);
+        if ($countGrades === 0) {
+            $average = null;
+        } else {
+            $average = round(array_sum($grades)/$countGrades, 2);
+        }
         return [
-            "average" => round(array_sum($grades)/count($grades), 2)
+            "average" => $average
         ];
     }
 }
